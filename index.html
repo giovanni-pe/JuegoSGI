@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITIL Knowledge Challenge</title>
+    <!-- jQuery CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-bg: rgb(33, 37, 41);
+            --secondary-bg: #243344;
+            --accent-color: #ff7700;
+            --accent-color-light: #ff9d4d;
+            --secondary-accent: #00e0ff;
+            --text-light: #ffffff;
+            --text-dim: #adb5bd;
+            --success-color: #00ff88;
+            --error-color: #ff4d6a;
+            --warning-color: #ffcc00;
+            --vote-color: #ffcc00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @keyframes bgPulse {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body {
+            background: linear-gradient(-45deg, var(--primary-bg), var(--secondary-bg), #1a2630, #162233);
+            background-size: 400% 400%;
+            animation: bgPulse 15s ease infinite;
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 10px;
+            overflow-x: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Shiny title effect */
+        .title {
+            position: relative;
+            color: transparent;
+            background: linear-gradient(90deg, #ff8800, #ffcc00, #ff8800);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-align: center;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            animation: shine 3s linear infinite;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        .title::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        /* Sleek card style */
+        .sleek-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 0 15px rgba(255, 119, 0, 0.2), 
+                        inset 0 0 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sleek-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-color-light), var(--accent-color));
+            z-index: 5;
+        }
+
+        /* Stats grid with modern feel */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-bottom: 3px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-shadow: 0 0 5px rgba(255, 119, 0, 0.5);
+        }
+
+        /* Progress bar with animation */
+        .progress {
+            height: 8px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-color-light));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Question card with modern styling */
+        .question-card {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .question-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--accent-color), transparent, var(--accent-color));
+            z-index: -1;
+            border-radius: 10px;
+            animation: borderGlow 3s infinite alternate;
+        }
+
+        @keyframes borderGlow {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .question-number {
+            font-size: 0.8rem;
+            color: var(--accent-color-light);
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--text-light);
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Options with interactive feel */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .option-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .option-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            background: rgba(10, 10, 10, 0.5);
+            border-color: var(--accent-color-light);
+        }
+
+        .option-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .option-card:hover::after {
+            transform: translateX(100%);
+        }
+
+        .option-letter {
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-right: 8px;
+            color: var(--accent-color);
+            box-shadow: 0 0 5px rgba(255, 119, 0, 0.3);
+        }
+
+        .option-text {
+            font-size: 0.85rem;
+            flex: 1;
+        }
+
+        /* Voting counter with modern styling */
+        .vote-counter {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--vote-color);
+            color: #000;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0 2px #000, 0 0 0 3px var(--vote-color), 0 0 5px rgba(255, 204, 0, 0.7);
+            z-index: 10;
+        }
+
+        .vote-counter.has-votes {
+            animation: pulseVote 1.5s infinite;
+        }
+
+        @keyframes pulseVote {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); box-shadow: 0 0 0 2px #000, 0 0 0 3px var(--vote-color), 0 0 15px rgba(255, 204, 0, 0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .option-card.selected {
+            border: 1px solid var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        .option-card.correct {
+            border: 1px solid var(--success-color);
+            box-shadow: 0 0 10px var(--success-color);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .option-card.incorrect {
+            border: 1px solid var(--error-color);
+            box-shadow: 0 0 10px var(--error-color);
+            background: rgba(255, 77, 106, 0.1);
+        }
+
+        /* Voting stats with modern style */
+        .voting-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+            font-size: 0.8rem;
+        }
+
+        .voting-stat-title {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px rgba(255, 119, 0, 0.3);
+        }
+
+        .voting-stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            padding: 5px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .voting-stat-card.correct {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--success-color);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+        }
+
+        .voting-stat-card .option-letter {
+            display: inline-flex;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            margin-right: 3px;
+        }
+
+        .voting-stat-card .vote-count {
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-top: 3px;
+            color: var(--vote-color);
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.3);
+        }
+
+        .voting-stat-card .correct-mark {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            color: var(--success-color);
+            font-size: 0.7rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Button with modern style */
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(to bottom, var(--accent-color), #e56b00);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(to bottom, #ff8800, #e56b00);
+        }
+
+        .btn:hover::after {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn i {
+            margin-right: 5px;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(to bottom, var(--secondary-accent), #00bfd9);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(to bottom, #00e9ff, #00bfd9);
+        }
+
+        .btn-success {
+            background: linear-gradient(to bottom, var(--success-color), #00cc6b);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(to bottom, #00ff88, #00cc6b);
+        }
+
+        /* Results container with modern feel */
+        .results-container {
+            text-align: center;
+            position: relative;
+        }
+
+        /* Modern style counter */
+        @keyframes counterFlicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.9; }
+        }
+
+        @keyframes counterSpin {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(0); }
+        }
+
+        .final-score {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            margin: 10px 0;
+            text-shadow: 0 0 15px rgba(255, 119, 0, 0.5);
+            position: relative;
+            display: inline-block;
+            animation: counterFlicker 2s infinite;
+        }
+
+        .final-score .digit {
+            display: inline-block;
+            animation: counterSpin 0.5s ease-out;
+            transform-origin: 50% 50%;
+            animation-fill-mode: backwards;
+        }
+
+        .points-text {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .results-details {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 10px;
+        }
+
+        .results-label {
+            color: var(--text-dim);
+        }
+
+        .results-value {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .feedback {
+            color: var(--text-light);
+            margin: 15px 0;
+            font-size: 1rem;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feedback::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: feedbackShine 5s infinite;
+        }
+
+        @keyframes feedbackShine {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(50%); }
+        }
+
+        /* Instructor feedback section */
+        .instructor-feedback {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 5px;
+            padding: 10px;
+            border-left: 3px solid var(--secondary-accent);
+        }
+
+        .instructor-feedback-title {
+            color: var(--secondary-accent);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .instructor-feedback-title i {
+            margin-right: 5px;
+        }
+
+        /* Animated voting elements */
+        .vote {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--vote-color);
+            z-index: -1;
+            opacity: 0;
+            animation: voteFloat 5s ease-in-out infinite;
+        }
+
+        @keyframes voteFloat {
+            0% { 
+                transform: translate(0, 0) rotate(0deg); 
+                opacity: 0;
+            }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { 
+                transform: translate(var(--x, 100px), var(--y, -100px)) rotate(var(--r, 180deg)); 
+                opacity: 0;
+            }
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 4px;
+            padding: 10px 15px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            transform: translateY(100%);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            max-width: 80%;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Score message */
+        .score-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--accent-color);
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 0 30px rgba(255, 119, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            border: 2px solid var(--accent-color);
+            text-shadow: 0 0 10px rgba(255, 119, 0, 0.5);
+        }
+
+        .score-message.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            animation: jackpot 0.5s ease;
+        }
+
+        @keyframes jackpot {
+            0% { transform: translate(-50%, -50%) scale(0.5); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: absolute;
+            z-index: -1;
+            opacity: 0;
+            animation: confettiFall 4s ease-in-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { 
+                transform: translateY(-50vh) rotate(0deg); 
+                opacity: 1;
+            }
+            100% { 
+                transform: translateY(50vh) rotate(360deg); 
+                opacity: 0;
+            }
+        }
+
+        /* Hide screens by default */
+        #quizContainer, #resultsScreen {
+            display: none;
+        }
+
+        /* Voting particles */
+        .voting-particle {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: var(--vote-color);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0;
+        }
+
+        /* Knowledge meter animation */
+        .knowledge-meter-container {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .knowledge-meter {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-color-light));
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+        }
+        
+        .knowledge-meter::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: meterShine 2s infinite;
+        }
+        
+        @keyframes meterShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .knowledge-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+            white-space: nowrap;
+        }
+
+        /* Media query for very small screens (iframe in PowerPoint) */
+        @media (max-width: 500px) {
+            body {
+                padding: 5px;
+            }
+            
+            .title {
+                font-size: 1.2rem;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .voting-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .btn {
+                padding: 6px 10px;
+                font-size: 0.7rem;
+            }
+
+            .final-score {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+        <div></div>
+    </div>
+
+    <!-- Score message -->
+    <div class="score-message" id="scoreMessage"></div>
+
+    <!-- Floating votes container -->
+    <div id="floating-votes"></div>
+
+    <div class="container">
+        <!-- Title -->
+        <h1 class="title">ITIL Knowledge Challenge</h1>
+        <p class="subtitle">¿Qué tanto aprendimos hoy sobre Gestión de Niveles de Servicio?</p>
+
+        <!-- Game container -->
+        <div id="game-container">
+            <!-- Intro screen -->
+            <div id="introScreen" class="sleek-card">
+                <h2 class="title" style="font-size: 1.5rem; margin-top: 10px;">¡Comprobemos lo Aprendido!</h2>
+                <p style="text-align: center; margin-bottom: 20px; font-size: 0.9rem; color: var(--text-dim);">
+                    Ahora que hemos visto el tema de Gestión de Niveles de Servicio, vamos a verificar qué tanto aprendimos.
+                    ¡Cada respuesta correcta suma puntos para la clase!
+                </p>
+                <div style="text-align: center;">
+                    <button id="startButton" class="btn animate__animated animate__pulse animate__infinite">
+                        <i class="fas fa-graduation-cap"></i> INICIAR EVALUACIÓN
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz content -->
+            <div id="quizContainer">
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-item animate__animated animate__fadeIn">
+                        <div class="stat-label">PREGUNTA</div>
+                        <div class="stat-value"><span id="currentQuestion">0</span>/<span id="totalQuestions">0</span></div>
+                    </div>
+                    <div class="stat-item animate__animated animate__fadeIn" style="animation-delay: 0.1s;">
+                        <div class="stat-label">PUNTOS</div>
+                        <div class="stat-value" id="totalScore">0</div>
+                    </div>
+                    <div class="stat-item animate__animated animate__fadeIn" style="animation-delay: 0.2s;">
+                        <div class="stat-label">ACIERTOS</div>
+                        <div class="stat-value"><span id="successRate">0</span>%</div>
+                    </div>
+                </div>
+
+                <!-- Progress bar -->
+                <div class="progress">
+                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+
+                <!-- Question card -->
+                <div class="sleek-card question-card animate__animated animate__fadeIn">
+                    <div class="question-number">Pregunta <span id="questionNumber">1</span>:</div>
+                    <div class="question-text" id="questionText"></div>
+
+                    <!-- Options -->
+                    <div class="options-grid" id="optionsContainer">
+                        <!-- Options will be inserted here dynamically -->
+                    </div>
+
+                    <!-- Voting stats -->
+                    <div id="votingStats" style="display: none;">
+                        <div class="voting-stat-title">
+                            <i class="fas fa-chart-bar"></i> Respuestas del Grupo
+                        </div>
+                        <div class="voting-stats" id="votingStatsContent">
+                            <!-- Voting stats will be inserted here dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="button-group">
+                        <button id="revealButton" class="btn animate__animated animate__pulse animate__infinite" style="display: none;">
+                            <i class="fas fa-eye"></i> REVELAR RESPUESTA
+                        </button>
+                        <button id="nextButton" class="btn btn-secondary" style="display: none;">
+                            <i class="fas fa-arrow-right"></i> SIGUIENTE
+                        </button>
+                        <button id="finishButton" class="btn btn-success" style="display: none;">
+                            <i class="fas fa-trophy"></i> FINALIZAR
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results screen -->
+            <div id="resultsScreen" class="sleek-card results-container">
+                <h2 class="title" style="font-size: 1.5rem; margin-top: 10px;">¡RESULTADOS FINALES!</h2>
+                
+                <div class="final-score" id="finalScore">0</div>
+                <div class="points-text">PUNTOS ACUMULADOS</div>
+                
+                <div class="knowledge-meter-container">
+                    <div class="knowledge-meter" id="knowledgeMeter"></div>
+                    <div class="knowledge-text"><span id="knowledgePercent">0</span>% DE COMPRENSIÓN</div>
+                </div>
+                
+                <div class="results-details">
+                    <div class="results-label">Tasa de Aciertos:</div>
+                    <div class="results-value"><span id="finalSuccessRate">0</span>%</div>
+                </div>
+                <div class="results-details">
+                    <div class="results-label">Preguntas:</div>
+                    <div class="results-value"><span id="answeredQuestions">0</span>/<span id="finalTotalQuestions">0</span></div>
+                </div>
+                
+                <div class="feedback" id="feedbackMessage"></div>
+                
+                <div class="instructor-feedback">
+                    <div class="instructor-feedback-title">
+                        <i class="fas fa-chalkboard-teacher"></i> Mensaje para el Docente
+                    </div>
+                    <div id="instructorMessage" style="font-size: 0.9rem; color: var(--text-dim);">
+                        La clase ha demostrado un buen entendimiento de los conceptos presentados sobre Gestión de Niveles de Servicio en ITIL. Esta actividad interactiva ha permitido evaluar la comprensión de manera dinámica y participativa.
+                    </div>
+                </div>
+                
+                <button id="restartButton" class="btn animate__animated animate__pulse animate__infinite" style="margin-top: 15px;">
+                    <i class="fas fa-redo"></i> REINICIAR EVALUACIÓN
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Questions data
+        const questions = [
+            {
+                question: "¿Cuál es el propósito de la Gestión de Niveles de Servicio?",
+                options: [
+                    "Asegurar que los servicios de TI estén disponibles las 24 horas del día",
+                    "Asegurar que los servicios de TI se entreguen de acuerdo con los niveles de servicio acordados",
+                    "Gestionar incidentes según prioridades",
+                    "Proporcionar soporte técnico de tercer nivel"
+                ],
+                correctIndex: 1
+            },
+            {
+                question: "¿Qué documento define formalmente los objetivos de nivel de servicio entre un proveedor de servicios y un cliente?",
+                options: [
+                    "OLA (Acuerdo de Nivel Operacional)",
+                    "UC (Contrato de Soporte)",
+                    "SLA (Acuerdo de Nivel de Servicio)",
+                    "CSI (Mejora Continua del Servicio)"
+                ],
+                correctIndex: 2
+            },
+            {
+                question: "¿Cuál de las siguientes opciones describe mejor un Acuerdo de Nivel Operacional (OLA)?",
+                options: [
+                    "Acuerdo entre el cliente y un proveedor externo",
+                    "Acuerdo entre el cliente y el proveedor de servicios de TI",
+                    "Acuerdo interno entre áreas de una misma organización de TI",
+                    "Contrato legal con una organización de auditoría externa"
+                ],
+                correctIndex: 2
+            },
+            {
+                question: "¿Qué se utiliza para monitorear y reportar el desempeño del servicio contra los niveles acordados?",
+                options: [
+                    "Revisión de capacidad",
+                    "Métricas de rendimiento del servicio",
+                    "Registro de errores conocidos",
+                    "Plan de mejora de disponibilidad"
+                ],
+                correctIndex: 1
+            },
+            {
+                question: "¿Cuál es una responsabilidad clave del proceso de Gestión de Niveles de Servicio?",
+                options: [
+                    "Asegurar la formación del personal técnico",
+                    "Evaluar el impacto de los cambios en la infraestructura",
+                    "Mantener el Catálogo de Servicios y negociar SLA",
+                    "Implementar cambios en la base de datos de configuración"
+                ],
+                correctIndex: 2
+            },
+            {
+                question: "¿Qué métricas suelen incluirse en un SLA para medir el rendimiento?",
+                options: [
+                    "Número de cambios implementados exitosamente",
+                    "Tiempo medio entre fallos y disponibilidad del servicio",
+                    "Cantidad de personal técnico disponible",
+                    "Número de licencias de software adquiridas"
+                ],
+                correctIndex: 1
+            },
+            {
+                question: "¿Cuál es la mejor práctica para establecer objetivos de nivel de servicio en un SLA?",
+                options: [
+                    "Definir objetivos inalcanzables para motivar al equipo",
+                    "Establecer objetivos basados en el rendimiento histórico y capacidades reales",
+                    "Utilizar los mismos objetivos para todos los servicios",
+                    "Definir objetivos sin consultar a los usuarios del servicio"
+                ],
+                correctIndex: 1
+            },
+            {
+                question: "¿Qué define un Contrato de Soporte (UC) en el contexto de Gestión de Niveles de Servicio?",
+                options: [
+                    "Un acuerdo entre diferentes equipos de TI",
+                    "Un acuerdo entre el proveedor de servicios y un proveedor externo",
+                    "Un acuerdo para la formación del personal de TI",
+                    "Un acuerdo entre usuarios del servicio"
+                ],
+                correctIndex: 1
+            },
+            {
+                question: "¿Qué ocurre cuando no se cumplen los objetivos establecidos en un SLA?",
+                options: [
+                    "Se implementa automáticamente un plan de mejora",
+                    "Se evalúan las causas y se define un plan de acción correctiva",
+                    "Se sanciona al proveedor del servicio",
+                    "Se cancela inmediatamente el servicio"
+                ],
+                correctIndex: 1
+            },
+            {
+                question: "¿Quién es el responsable principal de la negociación de los SLA?",
+                options: [
+                    "El Gestor de Niveles de Servicio",
+                    "El equipo de soporte técnico",
+                    "La mesa de servicio (Service Desk)",
+                    "El equipo de desarrollo"
+                ],
+                correctIndex: 0
+            }
+        ];
+
+        // Game state
+        let currentQuestion = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let gameStarted = false;
+        let votes = [0, 0, 0, 0]; // Tracks votes on each option
+
+        // DOM elements
+        const startButton = document.getElementById('startButton');
+        const quizContainer = document.getElementById('quizContainer');
+        const introScreen = document.getElementById('introScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const questionText = document.getElementById('questionText');
+        const questionNumber = document.getElementById('questionNumber');
+        const currentQuestionEl = document.getElementById('currentQuestion');
+        const totalQuestionsEl = document.getElementById('totalQuestions');
+        const totalScoreEl = document.getElementById('totalScore');
+        const successRateEl = document.getElementById('successRate');
+        const progressBar = document.getElementById('progressBar');
+        const revealButton = document.getElementById('revealButton');
+        const nextButton = document.getElementById('nextButton');
+        const finishButton = document.getElementById('finishButton');
+        const votingStats = document.getElementById('votingStats');
+        const votingStatsContent = document.getElementById('votingStatsContent');
+        const restartButton = document.getElementById('restartButton');
+        const finalScore = document.getElementById('finalScore');
+        const finalSuccessRate = document.getElementById('finalSuccessRate');
+        const knowledgeMeter = document.getElementById('knowledgeMeter');
+        const knowledgePercent = document.getElementById('knowledgePercent');
+        const answeredQuestions = document.getElementById('answeredQuestions');
+        const finalTotalQuestions = document.getElementById('finalTotalQuestions');
+        const feedbackMessage = document.getElementById('feedbackMessage');
+        const instructorMessage = document.getElementById('instructorMessage');
+        const toast = document.getElementById('toast');
+        const scoreMessage = document.getElementById('scoreMessage');
+        const floatingVotes = document.getElementById('floating-votes');
+
+        // Set up event listeners
+        function setupEventListeners() {
+            startButton.addEventListener('click', startGame);
+            revealButton.addEventListener('click', revealAnswer);
+            nextButton.addEventListener('click', nextQuestion);
+            finishButton.addEventListener('click', finishGame);
+            restartButton.addEventListener('click', restartGame);
+        }
+
+        // Initialize game
+        function initGame() {
+            setupEventListeners();
+            createFloatingVotes(5);
+            
+            // Initialize display elements
+            totalQuestionsEl.textContent = questions.length;
+            finalTotalQuestions.textContent = questions.length;
+        }
+
+        // Create floating votes
+        function createFloatingVotes(count) {
+            floatingVotes.innerHTML = '';
+            
+            for (let i = 0; i < count; i++) {
+                const vote = document.createElement('div');
+                vote.className = 'vote';
+                
+                // Random position
+                vote.style.top = `${Math.random() * 100}%`;
+                vote.style.left = `${Math.random() * 100}%`;
+                
+                // Random movement
+                vote.style.setProperty('--x', `${(Math.random() * 200 - 100)}px`);
+                vote.style.setProperty('--y', `${(Math.random() * 200 - 100)}px`);
+                vote.style.setProperty('--r', `${Math.random() * 360}deg`);
+                
+                // Random delay
+                vote.style.animationDelay = `${Math.random() * 5}s`;
+                
+                // Random color variations
+                const colorShift = Math.random() * 30 - 15;
+                vote.style.backgroundColor = `hsl(${45 + colorShift}, 100%, 50%)`;
+                
+                floatingVotes.appendChild(vote);
+            }
+            
+            // Replace votes periodically
+            setTimeout(() => {
+                createFloatingVotes(count);
+            }, 5000);
+        }
+
+        // Start the game
+        function startGame() {
+            gameStarted = true;
+            introScreen.style.display = 'none';
+            quizContainer.style.display = 'block';
+            
+            // Reset game state
+            currentQuestion = 0;
+            score = 0;
+            correctAnswers = 0;
+            
+            updateScore();
+            loadQuestion();
+        }
+
+        // Load a question
+        function loadQuestion() {
+            // Add animate class to question container
+            const questionCard = document.querySelector('.question-card');
+            questionCard.classList.add('animate__animated', 'animate__fadeIn');
+            setTimeout(() => {
+                questionCard.classList.remove('animate__animated', 'animate__fadeIn');
+            }, 1000);
+            
+            // Update progress indicators
+            currentQuestionEl.textContent = currentQuestion + 1;
+            questionNumber.textContent = currentQuestion + 1;
+            progressBar.style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+            
+            // Reset votes
+            votes = [0, 0, 0, 0];
+            
+            // Load question text
+            const question = questions[currentQuestion];
+            questionText.textContent = question.question;
+            
+            // Clear previous options
+            optionsContainer.innerHTML = '';
+            
+            // Add options with animation delay
+            question.options.forEach((option, index) => {
+                const optionCard = document.createElement('div');
+                optionCard.className = 'option-card animate__animated animate__fadeInUp';
+                optionCard.style.animationDelay = `${index * 0.1}s`;
+                
+                optionCard.innerHTML = `
+                    <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                    <div class="option-text">${option}</div>
+                    <div class="vote-counter">0</div>
+                `;
+                
+                // Add click event
+                optionCard.addEventListener('click', () => registerVote(optionCard, index));
+                
+                optionsContainer.appendChild(optionCard);
+                
+                // Remove animation class after animation completes
+                setTimeout(() => {
+                    optionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+                }, 1000);
+            });
+            
+            // Show/hide buttons
+            revealButton.style.display = 'flex';
+            revealButton.classList.add('animate__animated', 'animate__pulse', 'animate__infinite');
+            nextButton.style.display = 'none';
+            finishButton.style.display = 'none';
+            votingStats.style.display = 'none';
+        }
+
+        // Register a vote on an option
+        function registerVote(optionCard, index) {
+            // Only allow votes during voting phase
+            if (revealButton.style.display !== 'none') {
+                votes[index]++;
+                
+                // Update vote counter
+                const voteCounter = optionCard.querySelector('.vote-counter');
+                voteCounter.textContent = votes[index];
+                voteCounter.classList.add('has-votes');
+                
+                // Visual feedback
+                optionCard.classList.add('selected');
+                setTimeout(() => {
+                    optionCard.classList.remove('selected');
+                }, 300);
+                
+                // Create voting particle animation
+                createVotingParticle(optionCard, index);
+                
+                // Show toast with random educational messages
+                const messages = [
+                    `¡Voto registrado para la opción ${String.fromCharCode(65 + index)}!`, 
+                    `¡Un compañero eligió la opción ${String.fromCharCode(65 + index)}!`,
+                    `¡Nueva respuesta para la opción ${String.fromCharCode(65 + index)}!`,
+                    `¡${votes[index]} respuestas para ${String.fromCharCode(65 + index)}!`
+                ];
+                const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+                showToast(randomMsg);
+            }
+        }
+
+        // Create voting particle animation
+        function createVotingParticle(optionCard, index) {
+            const particle = document.createElement('div');
+            particle.className = 'voting-particle';
+            
+            // Position at center of screen initially
+            particle.style.top = '50%';
+            particle.style.left = '50%';
+            
+            document.body.appendChild(particle);
+            
+            // Get target position (the vote counter)
+            const voteCounter = optionCard.querySelector('.vote-counter');
+            const voteRect = voteCounter.getBoundingClientRect();
+            
+            // Animate particle
+            particle.animate([
+                { 
+                    top: '50%', 
+                    left: '50%', 
+                    transform: 'translate(-50%, -50%) scale(0.5)',
+                    opacity: 0.8
+                },
+                { 
+                    top: `${voteRect.top + voteRect.height/2}px`, 
+                    left: `${voteRect.left + voteRect.width/2}px`, 
+                    transform: 'translate(-50%, -50%) scale(1)',
+                    opacity: 1
+                }
+            ], {
+                duration: 500,
+                easing: 'cubic-bezier(0.1, 0.9, 0.2, 1.1)',
+                fill: 'forwards'
+            });
+            
+            // Remove particle after animation
+            setTimeout(() => {
+                document.body.removeChild(particle);
+            }, 600);
+        }
+
+        // Reveal the correct answer
+        function revealAnswer() {
+            const question = questions[currentQuestion];
+            const correctIndex = question.correctIndex;
+            
+            // Update all option cards
+            const optionCards = document.querySelectorAll('.option-card');
+            optionCards.forEach((card, index) => {
+                if (index === correctIndex) {
+                    card.classList.add('correct', 'animate__animated', 'animate__pulse');
+                } else {
+                    card.classList.add('incorrect');
+                }
+            });
+            
+            // Calculate points with multiplier for more votes
+            const voteMultiplier = Math.min(5, Math.max(1, votes[correctIndex]));
+            const pointsEarned = votes[correctIndex] * 10;
+            score += pointsEarned;
+            
+            // Update stats
+            if (votes[correctIndex] > 0) {
+                correctAnswers++;
+            }
+            
+            updateScore();
+            
+            // Display voting stats
+            displayVotingStats(correctIndex);
+            
+            // Show success message with different messages based on points
+            if (pointsEarned > 0) {
+                if (pointsEarned >= 100) {
+                    // Special animation for high scores
+                    const messages = [
+                        `¡EXCELENTE! +${pointsEarned} PUNTOS`,
+                        `¡INCREÍBLE! +${pointsEarned} PUNTOS`,
+                        `¡BRILLANTE! +${pointsEarned} PUNTOS`
+                    ];
+                    const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+                    showScoreMessage(randomMsg);
+                    createConfetti(true, 80);
+                } else {
+                    const messages = [
+                        `¡+${pointsEarned} PUNTOS!`,
+                        `¡CORRECTO! +${pointsEarned}`,
+                        `¡BIEN HECHO! +${pointsEarned}`
+                    ];
+                    const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+                    showScoreMessage(randomMsg);
+                    createConfetti(pointsEarned > 50);
+                }
+                
+                // Educational feedback
+                const feedbacks = [
+                    "¡Muy bien! Han comprendido este concepto correctamente.",
+                    "¡Excelente comprensión del tema!",
+                    "¡Perfecto! Este es un punto clave en la Gestión de Niveles de Servicio.",
+                    "¡Correcto! Están dominando los conceptos."
+                ];
+                const randomFeedback = feedbacks[Math.floor(Math.random() * feedbacks.length)];
+                setTimeout(() => {
+                    showToast(randomFeedback);
+                }, 1500);
+                
+            } else {
+                showToast('No hubo respuestas correctas esta vez. Repasemos este concepto.', true);
+            }
+            
+            // Show next button
+            revealButton.style.display = 'none';
+            
+            if (currentQuestion < questions.length - 1) {
+                nextButton.style.display = 'flex';
+                nextButton.classList.add('animate__animated', 'animate__pulse');
+            } else {
+                finishButton.style.display = 'flex';
+                finishButton.classList.add('animate__animated', 'animate__pulse');
+            }
+        }
+
+        // Display voting statistics
+        function displayVotingStats(correctIndex) {
+            votingStatsContent.innerHTML = '';
+            
+            // Create stat for each option
+            questions[currentQuestion].options.forEach((option, index) => {
+                const isCorrect = index === correctIndex;
+                
+                const statCard = document.createElement('div');
+                statCard.className = `voting-stat-card ${isCorrect ? 'correct' : ''} animate__animated animate__fadeIn`;
+                statCard.style.animationDelay = `${index * 0.1}s`;
+                
+                statCard.innerHTML = `
+                    <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                    <div class="vote-count">${votes[index]}</div>
+                    ${isCorrect ? '<div class="correct-mark"><i class="fas fa-check-circle"></i></div>' : ''}
+                `;
+                
+                votingStatsContent.appendChild(statCard);
+            });
+            
+            votingStats.style.display = 'block';
+        }
+
+        // Go to next question
+        function nextQuestion() {
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        // Finish the game
+        function finishGame() {
+            quizContainer.style.display = 'none';
+            resultsScreen.style.display = 'block';
+            
+            // Animate in the results screen
+            resultsScreen.classList.add('animate__animated', 'animate__fadeIn');
+            
+            // Update final stats with animation
+            animateCountUp(finalScore, score);
+            const successRate = calculateSuccessRate();
+            finalSuccessRate.textContent = successRate;
+            answeredQuestions.textContent = questions.length;
+            
+            // Animate knowledge meter
+            setTimeout(() => {
+                knowledgeMeter.style.width = `${successRate}%`;
+                knowledgePercent.textContent = successRate;
+            }, 500);
+            
+            // Generate feedback message
+            generateFeedback(successRate);
+            
+            // Update instructor message based on performance
+            updateInstructorMessage(successRate);
+            
+            // Add digit animation to final score
+            animateFinalScore();
+            
+            // Final celebration
+            if (score > 0) {
+                setTimeout(() => {
+                    createConfetti(true, 50);
+                }, 1000);
+            }
+        }
+
+        // Update instructor message
+        function updateInstructorMessage(successRate) {
+            if (successRate >= 90) {
+                instructorMessage.textContent = "La clase ha demostrado una comprensión excepcional de los conceptos de Gestión de Niveles de Servicio. La evaluación interactiva muestra que los estudiantes han internalizado los puntos clave de manera efectiva. El formato dinámico ha permitido reforzar el aprendizaje de manera lúdica.";
+            } else if (successRate >= 70) {
+                instructorMessage.textContent = "El grupo ha mostrado una buena comprensión de los conceptos de Gestión de Niveles de Servicio. Esta actividad interactiva ha permitido identificar las áreas de fortaleza y también las que requieren refuerzo adicional.";
+            } else if (successRate >= 50) {
+                instructorMessage.textContent = "La evaluación interactiva indica una comprensión adecuada de los conceptos básicos, aunque algunos temas específicos podrían beneficiarse de un repaso adicional. La participación activa demuestra interés en el tema.";
+            } else {
+                instructorMessage.textContent = "La evaluación interactiva ha revelado algunas áreas que requieren refuerzo. Recomendaría revisar los conceptos fundamentales de Gestión de Niveles de Servicio en una sesión futura para consolidar el aprendizaje.";
+            }
+        }
+
+        // Animate the final score with individual digits
+        function animateFinalScore() {
+            const scoreStr = score.toString();
+            finalScore.innerHTML = '';
+            
+            // Create a span for each digit with staggered animation
+            for (let i = 0; i < scoreStr.length; i++) {
+                const digitSpan = document.createElement('span');
+                digitSpan.className = 'digit';
+                digitSpan.textContent = scoreStr[i];
+                digitSpan.style.animationDelay = `${i * 0.1}s`;
+                
+                finalScore.appendChild(digitSpan);
+            }
+        }
+
+        // Animate count up
+        function animateCountUp(element, target, duration = 1500) {
+            const start = 0;
+            const increment = target / 40;
+            let current = start;
+            
+            const stepTime = Math.abs(Math.floor(duration / (target - start)));
+            
+            const timer = setInterval(() => {
+                current += increment;
+                
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, stepTime);
+        }
+
+        // Restart the game
+        function restartGame() {
+            resultsScreen.style.display = 'none';
+            introScreen.style.display = 'block';
+            gameStarted = false;
+        }
+
+        // Update score display
+        function updateScore() {
+            // Animate score change
+            animateCountUp(totalScoreEl, score, 800);
+            successRateEl.textContent = calculateSuccessRate();
+        }
+
+        // Calculate success rate
+        function calculateSuccessRate() {
+            if (currentQuestion === 0) return 0;
+            return Math.round((correctAnswers / (currentQuestion + 1)) * 100);
+        }
+
+        // Generate feedback message
+        function generateFeedback(successRate) {
+            if (successRate >= 90) {
+                feedbackMessage.textContent = "¡EXCELENTE! El grupo ha demostrado un dominio excepcional de la Gestión de Niveles de Servicio. ¡Son verdaderos expertos en ITIL!";
+                feedbackMessage.classList.add('animate__animated', 'animate__pulse');
+            } else if (successRate >= 70) {
+                feedbackMessage.textContent = "¡MUY BIEN! El grupo muestra una comprensión sólida de los conceptos de Gestión de Niveles de Servicio.";
+            } else if (successRate >= 50) {
+                feedbackMessage.textContent = "¡BUEN TRABAJO! El conocimiento del grupo es adecuado, aunque hay oportunidades para profundizar en algunos conceptos.";
+            } else {
+                feedbackMessage.textContent = "¡SIGAMOS APRENDIENDO! Hay oportunidades para reforzar los conceptos clave de Gestión de Niveles de Servicio.";
+            }
+        }
+
+        // Show toast notification
+        function showToast(message, isWarning = false) {
+            const toastContent = toast.querySelector('div');
+            toastContent.textContent = message;
+            
+            // Set toast style based on type
+            if (isWarning) {
+                toast.style.borderLeftColor = 'var(--error-color)';
+            } else {
+                toast.style.borderLeftColor = 'var(--accent-color)';
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // Show score message
+        function showScoreMessage(message) {
+            scoreMessage.textContent = message;
+            scoreMessage.classList.add('show');
+            
+            setTimeout(() => {
+                scoreMessage.classList.remove('show');
+            }, 1500);
+        }
+
+        // Create confetti effects
+        function createConfetti(isFinal = false, count = 30) {
+            const body = document.body;
+            
+            // Create confetti
+            const confettiCount = count;
+            const colors = ['#ff7700', '#ffcc00', '#00e0ff', '#00ff88', '#ff4d6a'];
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                
+                // Random size
+                const size = Math.random() * 12 + 5;
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                
+                // Random position
+                confetti.style.left = `${Math.random() * 100}%`;
+                
+                // Random color
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Random shape
+                const shapes = ['circle', 'square', 'triangle'];
+                const shape = shapes[Math.floor(Math.random() * shapes.length)];
+                if (shape === 'circle') {
+                    confetti.style.borderRadius = '50%';
+                } else if (shape === 'triangle') {
+                    confetti.style.width = '0';
+                    confetti.style.height = '0';
+                    confetti.style.backgroundColor = 'transparent';
+                    confetti.style.borderLeft = `${size/2}px solid transparent`;
+                    confetti.style.borderRight = `${size/2}px solid transparent`;
+                    confetti.style.borderBottom = `${size}px solid ${colors[Math.floor(Math.random() * colors.length)]}`;
+                }
+                
+                // Random animation duration and delay
+                confetti.style.animationDuration = `${Math.random() * 2 + 2}s`;
+                confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+                
+                body.appendChild(confetti);
+                
+                // Remove after animation
+                setTimeout(() => {
+                    if (body.contains(confetti)) {
+                        body.removeChild(confetti);
+                    }
+                }, 4000);
+            }
+        }
+
+        // Initialize the game on load
+        window.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>
