@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión del Nivel de Servicio - SLM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(ellipse at center, #1a1a1a 0%, #0d0d0d 100%);
+            color: #ffd700;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Partículas de fondo animadas */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            width: 95%;
+            max-width: 1400px;
+            height: 95%;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(13, 13, 13, 0.98) 100%);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+            padding: 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide.active {
+            display: flex;
+            animation: slideEnter 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        @keyframes slideEnter {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) rotateY(90deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotateY(0deg);
+            }
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            animation: rotate 10s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .slide h1 {
+            font-size: 5.5rem;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #ffd700;
+            font-weight: 900;
+            text-shadow: 3px 3px 0px #000000, 0 0 50px rgba(255, 215, 0, 0.8);
+            animation: titleGlow 2s ease-in-out infinite alternate;
+            line-height: 1.2;
+        }
+
+        @keyframes titleGlow {
+            0% { filter: brightness(1); text-shadow: 3px 3px 0px #000000, 0 0 50px rgba(255, 215, 0, 0.8); }
+            100% { filter: brightness(1.3); text-shadow: 3px 3px 0px #000000, 0 0 80px rgba(255, 215, 0, 1); }
+        }
+
+        .slide h2 {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #ffd700;
+            font-weight: 800;
+            text-shadow: 2px 2px 0px #000000, 0 0 30px rgba(255, 215, 0, 0.6);
+            animation: fadeInUp 1s ease-out 0.5s both;
+            line-height: 1.3;
+        }
+
+        .slide h3 {
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+            color: #ffd700;
+            font-weight: 700;
+            text-shadow: 2px 2px 0px #000000;
+            animation: fadeInLeft 1s ease-out 0.8s both;
+            line-height: 1.3;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid #ffd700;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            animation: cardSlideIn 1s ease-out 1s both;
+        }
+
+        @keyframes cardSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(255, 215, 0, 0.4);
+            border-color: #ffed4e;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card h4 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ffd700;
+            animation: iconBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .highlight-box {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin: 30px 0;
+            color: #1a1a1a;
+            font-weight: bold;
+            font-size: 1.5rem;
+            animation: pulse 3s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .objectives-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .objective-item {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(0, 0, 0, 0.8));
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #ffd700;
+            animation: slideInRight 1s ease-out calc(var(--delay) * 0.2s) both;
+            transition: all 0.3s ease;
+        }
+
+        .objective-item:hover {
+            transform: translateX(10px);
+            border-left-color: #ffed4e;
+            box-shadow: 5px 5px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        @keyframes slideInRight {
+            0% {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .sla-types {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .sla-type {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #1a1a1a;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            min-width: 250px;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: flipIn 1s ease-out calc(var(--delay) * 0.3s) both;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        @keyframes flipIn {
+            0% {
+                opacity: 0;
+                transform: rotateY(90deg) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: rotateY(0deg) scale(1);
+            }
+        }
+
+        .sla-type:hover {
+            transform: rotateY(5deg) scale(1.1);
+            box-shadow: 0 20px 50px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Gráfico circular animado */
+        .circular-progress {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(#ffd700 0deg, #ffd700 calc(var(--percentage) * 3.6deg), rgba(255, 215, 0, 0.2) calc(var(--percentage) * 3.6deg));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: spin 2s ease-in-out;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(-90deg); }
+            100% { transform: rotate(calc(-90deg + var(--percentage) * 3.6deg)); }
+        }
+
+        .circular-progress::after {
+            content: attr(data-percentage) '%';
+            position: absolute;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .metrics {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .metric {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: bounceIn 1s ease-out calc(var(--delay) * 0.2s) both;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) translateY(50px);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1) translateY(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .metric-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        /* Diagrama de flujo animado */
+        .process-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .process-step {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #1a1a1a;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            min-width: 180px;
+            position: relative;
+            animation: processSlide 1s ease-out calc(var(--delay) * 0.3s) both;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes processSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .process-step:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .process-step:not(:last-child)::after {
+            content: "→";
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2.5rem;
+            color: #ffd700;
+            animation: arrowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes arrowPulse {
+            0%, 100% { opacity: 0.7; transform: translateY(-50%) scale(1); }
+            50% { opacity: 1; transform: translateY(-50%) scale(1.2); }
+        }
+
+        /* Gráfico de barras animado */
+        .bar-chart {
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+            height: 200px;
+            margin: 30px 0;
+            gap: 20px;
+        }
+
+        .bar {
+            width: 60px;
+            background: linear-gradient(to top, #ffd700, #ffed4e);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            animation: barGrow 2s ease-out calc(var(--delay) * 0.2s) both;
+        }
+
+        @keyframes barGrow {
+            0% { height: 0; }
+            100% { height: var(--height); }
+        }
+
+        .bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            color: #1a1a1a;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.5);
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(45deg, rgba(255, 215, 0, 0.2), rgba(0, 0, 0, 0.8));
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            border: 1px solid #ffd700;
+            animation: counterFade 1s ease-out;
+        }
+
+        @keyframes counterFade {
+            0% { opacity: 0; transform: translateX(50px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Animaciones de texto */
+        .typing-effect {
+            overflow: hidden;
+            border-right: 3px solid #ffd700;
+            white-space: nowrap;
+            animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #ffd700; }
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        ul li {
+            animation: listSlide 0.8s ease-out calc(var(--delay) * 0.1s) both;
+            padding: 10px 0;
+        }
+
+        ul li:before {
+            content: "✦ ";
+            color: #ffd700;
+            font-weight: bold;
+            margin-right: 15px;
+            animation: iconSpin 2s linear infinite;
+        }
+
+        @keyframes iconSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes listSlide {
+            0% {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .intro-text {
+            font-size: 1.6rem;
+            text-align: center;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: #cccccc;
+            animation: textGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+            100% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide h1 { font-size: 2.5rem; }
+            .slide h2 { font-size: 2rem; }
+            .slide { padding: 20px; }
+            .process-step:not(:last-child)::after {
+                content: "↓";
+                right: 50%;
+                bottom: -25px;
+                top: auto;
+                transform: translateX(50%);
+            }
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animación de carga inicial */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeOut 2s ease-out 1s both;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255, 215, 0, 0.3);
+            border-top: 3px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="particles"></div>
+
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">8</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <h1 class="typing-effect">Gestión del Nivel de Servicio</h1>
+            <h2>Service Level Management (SLM)</h2>
+            <div class="highlight-box">
+                🎯 Garantizar niveles de servicio acordados y mejorar continuamente la calidad del servicio de TI
+            </div>
+            <p class="intro-text">
+                Basado en ITIL v3 - Framework para la excelencia en servicios de TI
+            </p>
+            <div class="bar-chart">
+                <div class="bar" style="--height: 80px; --delay: 1;" data-value="Calidad"></div>
+                <div class="bar" style="--height: 120px; --delay: 2;" data-value="Servicio"></div>
+                <div class="bar" style="--height: 100px; --delay: 3;" data-value="Gestión"></div>
+                <div class="bar" style="--height: 140px; --delay: 4;" data-value="Mejora"></div>
+            </div>
+        </div>
+
+        <!-- Slide 2: ¿Qué es SLM? -->
+        <div class="slide">
+            <h2>¿Qué es la Gestión del Nivel de Servicio?</h2>
+            <div class="content-grid">
+                <div class="card" style="--delay: 1;">
+                    <h4>🎯 Propósito</h4>
+                    <p>Garantizar que se proporciona un nivel acordado de servicio de TI para todos los servicios actuales y futuros</p>
+                </div>
+                <div class="card" style="--delay: 2;">
+                    <h4>🤝 Función</h4>
+                    <p>Representa al proveedor de servicios ante el cliente y al negocio ante el proveedor de servicios</p>
+                </div>
+                <div class="card" style="--delay: 3;">
+                    <h4>📋 Resultado</h4>
+                    <p>Establece contacto bidireccional para discutir servicios actuales y futuros</p>
+                </div>
+            </div>
+            <div class="metrics">
+                <div class="metric" style="--delay: 1;">
+                    <div class="circular-progress" style="--percentage: 85;" data-percentage="85"></div>
+                    <p>Efectividad</p>
+                </div>
+                <div class="metric" style="--delay: 2;">
+                    <div class="circular-progress" style="--percentage: 92;" data-percentage="92"></div>
+                    <p>Satisfacción</p>
+                </div>
+                <div class="metric" style="--delay: 3;">
+                    <div class="circular-progress" style="--percentage: 78;" data-percentage="78"></div>
+                    <p>Cumplimiento</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Objetivos Principales -->
+        <div class="slide">
+            <h2>Objetivos Principales del SLM</h2>
+            <div class="objectives-list">
+                <div class="objective-item" style="--delay: 1;">
+                    <strong>📋 Definir y Documentar</strong><br>
+                    Acordar, monitorizar y revisar niveles de servicio
+                </div>
+                <div class="objective-item" style="--delay: 2;">
+                    <strong>🤝 Mejorar Relaciones</strong><br>
+                    Establecer comunicación efectiva con el negocio
+                </div>
+                <div class="objective-item" style="--delay: 3;">
+                    <strong>📊 Objetivos Medibles</strong><br>
+                    Desarrollar métricas específicas y alcanzables
+                </div>
+                <div class="objective-item" style="--delay: 4;">
+                    <strong>😊 Satisfacción del Cliente</strong><br>
+                    Monitorizar y mejorar la calidad percibida
+                </div>
+                <div class="objective-item" style="--delay: 5;">
+                    <strong>🎯 Expectativas Claras</strong><br>
+                    Eliminar ambigüedades en el nivel de servicio
+                </div>
+                <div class="objective-item" style="--delay: 6;">
+                    <strong>💰 Mejoras Justificadas</strong><br>
+                    Implementar medidas proactivas rentables
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Tipos de SLA -->
+        <div class="slide">
+            <h2>Tipos de Acuerdos de Nivel de Servicio</h2>
+            <div class="sla-types">
+                <div class="sla-type" style="--delay: 1;">
+                    <div class="metric-icon">📄</div>
+                    <h3>SLA por Servicio</h3>
+                    <p>Un acuerdo cubre un único servicio para todos los clientes</p>
+                    <small>Ej: Servicio de correo electrónico</small>
+                </div>
+                <div class="sla-type" style="--delay: 2;">
+                    <div class="metric-icon">👥</div>
+                    <h3>SLA por Cliente</h3>
+                    <p>Un acuerdo cubre todos los servicios que usa un cliente</p>
+                    <small>Preferido por clientes</small>
+                </div>
+                <div class="sla-type" style="--delay: 3;">
+                    <div class="metric-icon">🏢</div>
+                    <h3>SLA Multinivel</h3>
+                    <p>Combinación de niveles: Corporativo, Cliente y Servicio</p>
+                    <small>Más manejable y flexible</small>
+                </div>
+            </div>
+            <svg width="100%" height="200" style="margin-top: 40px;">
+                <defs>
+                    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#ffed4e;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <circle cx="200" cy="100" r="60" fill="url(#goldGradient)" opacity="0.8">
+                    <animate attributeName="r" values="60;70;60" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="500" cy="100" r="60" fill="url(#goldGradient)" opacity="0.8">
+                    <animate attributeName="r" values="60;70;60" dur="3s" begin="1s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="800" cy="100" r="60" fill="url(#goldGradient)" opacity="0.8">
+                    <animate attributeName="r" values="60;70;60" dur="3s" begin="2s" repeatCount="indefinite"/>
+                </circle>
+                <line x1="260" y1="100" x2="440" y2="100" stroke="#ffd700" stroke-width="3">
+                    <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/>
+                </line>
+                <line x1="560" y1="100" x2="740" y2="100" stroke="#ffd700" stroke-width="3">
+                    <animate attributeName="opacity" values="0;1;0" dur="2s" begin="1s" repeatCount="indefinite"/>
+                </line>
+            </svg>
+        </div>
+
+        <!-- Slide 5: Actividades Clave -->
+        <div class="slide">
+            <h2>Actividades Principales del SLM</h2>
+            <div class="process-flow">
+                <div class="process-step" style="--delay: 1;">
+                    <div class="metric-icon">🎨</div>
+                    <strong>Diseño</strong><br>
+                    Marcos de SLA
+                </div>
+                <div class="process-step" style="--delay: 2;">
+                    <div class="metric-icon">📝</div>
+                    <strong>Documentar</strong><br>
+                    Requisitos SLR
+                </div>
+                <div class="process-step" style="--delay: 3;">
+                    <div class="metric-icon">📊</div>
+                    <strong>Monitorizar</strong><br>
+                    Rendimiento
+                </div>
+                <div class="process-step" style="--delay: 4;">
+                    <div class="metric-icon">📈</div>
+                    <strong>Reportar</strong><br>
+                    Resultados
+                </div>
+                <div class="process-step" style="--delay: 5;">
+                    <div class="metric-icon">🚀</div>
+                    <strong>Mejorar</strong><br>
+                    Continuamente
+                </div>
+            </div>
+            <div class="content-grid">
+                <div class="card" style="--delay: 6;">
+                    <h4>📊 Monitorización</h4>
+                    <ul>
+                        <li style="--delay: 1;">Rendimiento vs SLA</li>
+                        <li style="--delay: 2;">Comunicación de resultados</li>
+                        <li style="--delay: 3;">Registro de quejas y elogios</li>
+                    </ul>
+                </div>
+                <div class="card" style="--delay: 7;">
+                    <h4>😊 Satisfacción</h4>
+                    <ul>
+                        <li style="--delay: 4;">Encuestas de satisfacción</li>
+                        <li style="--delay: 5;">Criterios tangibles</li>
+                        <li style="--delay: 6;">Feedback continuo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Valor para el Negocio -->
+        <div class="slide">
+            <h2>Valor para el Negocio</h2>
+            <div class="highlight-box">
+                🌟 Interlocución consistente con el negocio para todos los aspectos relacionados con el servicio
+            </div>
+            <div class="content-grid">
+                <div class="card" style="--delay: 1;">
+                    <h4>🎯 Objetivos Acordados</h4>
+                    <p>Proporciona al negocio objetivos claros y información de gestión requerida</p>
+                </div>
+                <div class="card" style="--delay: 2;">
+                    <h4>🛡️ Garantía de Cumplimiento</h4>
+                    <p>Asegura el cumplimiento de objetivos acordados</p>
+                </div>
+                <div class="card" style="--delay: 3;">
+                    <h4>🔄 Retroalimentación</h4>
+                    <p>Proporciona información sobre causas de incumplimiento y acciones correctivas</p>
+                </div>
+                <div class="card" style="--delay: 4;">
+                    <h4>📈 Mejora Continua</h4>
+                    <p>Garantiza mejora incremental de la calidad, justificable en coste</p>
+                </div>
+            </div>
+            <div class="bar-chart">
+                <div class="bar" style="--height: 120px; --delay: 1;" data-value="ROI"></div>
+                <div class="bar" style="--height: 160px; --delay: 2;" data-value="Calidad"></div>
+                <div class="bar" style="--height: 140px; --delay: 3;" data-value="Confianza"></div>
+                <div class="bar" style="--height: 180px; --delay: 4;" data-value="Valor"></div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Métricas y KPIs -->
+        <div class="slide">
+            <h2>Métricas Clave (KPIs)</h2>
+            <div class="metrics">
+                <div class="metric" style="--delay: 1;">
+                    <div class="metric-icon">📉</div>
+                    <div class="circular-progress" style="--percentage: 25;" data-percentage="25"></div>
+                    <div>Descenso en % de objetivos SLA incumplidos</div>
+                </div>
+                <div class="metric" style="--delay: 2;">
+                    <div class="metric-icon">📈</div>
+                    <div class="circular-progress" style="--percentage: 95;" data-percentage="95"></div>
+                    <div>Aumento en % de satisfacción del cliente</div>
+                </div>
+                <div class="metric" style="--delay: 3;">
+                    <div class="metric-icon">⚡</div>
+                    <div class="circular-progress" style="--percentage: 15;" data-percentage="15"></div>
+                    <div>Reducción de incumplimientos de SLA</div>
+                </div>
+            </div>
+            <div class="highlight-box">
+                "Lo que se puede medir, se puede gestionar" 📊
+            </div>
+            <svg width="100%" height="150" style="margin-top: 30px;">
+                <path d="M50,100 Q300,50 550,100 T1000,100" stroke="#ffd700" stroke-width="4" fill="none">
+                    <animate attributeName="d" 
+                             values="M50,100 Q300,50 550,100 T1000,100;M50,100 Q300,120 550,100 T1000,100;M50,100 Q300,50 550,100 T1000,100" 
+                             dur="4s" 
+                             repeatCount="indefinite"/>
+                </path>
+                <circle r="8" fill="#ffd700">
+                    <animateMotion dur="4s" repeatCount="indefinite">
+                        <mpath href="#path"/>
+                    </animateMotion>
+                </circle>
+            </svg>
+        </div>
+
+        <!-- Slide 8: Conclusiones -->
+        <div class="slide">
+            <h2>Puntos Clave para Recordar</h2>
+            <div class="content-grid">
+                <div class="card" style="--delay: 1;">
+                    <h4>🎯 Enfoque</h4>
+                    <p>SLM es el puente entre TI y el negocio, garantizando servicios de calidad acordada</p>
+                </div>
+                <div class="card" style="--delay: 2;">
+                    <h4>🔄 Proceso Continuo</h4>
+                    <p>Monitorización, medición y mejora constante de los niveles de servicio</p>
+                </div>
+                <div class="card" style="--delay: 3;">
+                    <h4>🤝 Relaciones</h4>
+                    <p>Desarrollo y mantenimiento de relaciones sólidas con clientes y stakeholders</p>
+                </div>
+                <div class="card" style="--delay: 4;">
+                    <h4>💼 Valor de Negocio</h4>
+                    <p>Proporciona confianza, transparencia y justificación de costes en servicios de TI</p>
+                </div>
+            </div>
+            <div class="highlight-box">
+                🏆 El éxito del SLM se mide por la satisfacción del cliente y el cumplimiento de objetivos acordados
+            </div>
+            <div class="metrics">
+                <div class="metric" style="--delay: 5;">
+                    <div class="metric-icon">🎖️</div>
+                    <p><strong>Excelencia</strong></p>
+                </div>
+                <div class="metric" style="--delay: 6;">
+                    <div class="metric-icon">🚀</div>
+                    <p><strong>Innovación</strong></p>
+                </div>
+                <div class="metric" style="--delay: 7;">
+                    <div class="metric-icon">💎</div>
+                    <p><strong>Calidad</strong></p>
+                </div>
+            </div>
+            <div class="metrics"> 
+                <a href="./index.html">Preguntas</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="previousSlide()">← Anterior</button>
+        <button class="nav-btn" onclick="nextSlide()">Siguiente →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Crear partículas animadas
+        function createParticles() {
+            const particles = document.querySelector('.particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 6 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                particles.appendChild(particle);
+            }
+        }
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        // Navigation with keyboard
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            } else if (e.key === 'f' || e.key === 'F') {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                } else {
+                    document.documentElement.requestFullscreen();
+                }
+            }
+        });
+
+        // Inicializar
+        createParticles();
+
+        // Auto-advance slides (opcional)
+        // setInterval(nextSlide, 15000);
+
+        // Animar gráficos circulares al aparecer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'spin 2s ease-in-out';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.circular-progress').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
