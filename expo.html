@@ -628,7 +628,7 @@
 
     <div class="presentation-container">
         <div class="slide-counter">
-            <span id="current-slide">1</span> / <span id="total-slides">8</span>
+            <span id="current-slide">1</span> / <span id="total-slides">9</span>
         </div>
 
         <!-- Slide 1: Título -->
@@ -682,7 +682,156 @@
             </div>
         </div>
 
-        <!-- Slide 3: Objetivos Principales -->
+        <!-- Slide 3: Conceptos Clave SLM -->
+        <div class="slide">
+            <h2>Conceptos Clave del SLM</h2>
+            <div class="concepts-container">
+                <div class="concept-card" style="--delay: 1;">
+                    <div class="concept-icon">📋</div>
+                    <h3>SLA</h3>
+                    <h4>Service Level Agreement</h4>
+                    <p>Acuerdo entre proveedor de servicios y cliente que define niveles de servicio esperados</p>
+                </div>
+                <div class="concept-card" style="--delay: 2;">
+                    <div class="concept-icon">🔧</div>
+                    <h3>OLA</h3>
+                    <h4>Operational Level Agreement</h4>
+                    <p>Acuerdo interno entre departamentos de TI para soportar los SLAs</p>
+                </div>
+                <div class="concept-card" style="--delay: 3;">
+                    <div class="concept-icon">📄</div>
+                    <h3>UC</h3>
+                    <h4>Underpinning Contract</h4>
+                    <p>Contratos con proveedores externos que soportan la entrega del servicio</p>
+                </div>
+                <div class="concept-card central" style="--delay: 4;">
+                    <div class="concept-icon">⚙️</div>
+                    <h3>SLM</h3>
+                    <h4>Service Level Management</h4>
+                    <p>Proceso que coordina y gestiona todos los acuerdos</p>
+                </div>
+            </div>
+            
+            <!-- Gráfico de relaciones SVG -->
+            <div class="relationships-chart">
+                <svg width="100%" height="300" viewBox="0 0 1000 300">
+                    <defs>
+                        <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ffed4e;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge> 
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <!-- Cliente -->
+                    <rect x="50" y="20" width="120" height="60" rx="15" fill="url(#goldGradient)" filter="url(#glow)">
+                        <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+                    </rect>
+                    <text x="110" y="40" text-anchor="middle" fill="#000" font-size="16" font-weight="bold">CLIENTE</text>
+                    <text x="110" y="60" text-anchor="middle" fill="#000" font-size="14">NEGOCIO</text>
+                    
+                    <!-- SLA -->
+                    <rect x="300" y="20" width="120" height="60" rx="15" fill="url(#goldGradient)" filter="url(#glow)">
+                        <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+                    </rect>
+                    <text x="360" y="45" text-anchor="middle" fill="#000" font-size="18" font-weight="bold">SLA</text>
+                    <text x="360" y="65" text-anchor="middle" fill="#000" font-size="12">Acuerdo Principal</text>
+                    
+                    <!-- SLM Central -->
+                    <circle cx="500" cy="150" r="50" fill="url(#goldGradient)" filter="url(#glow)">
+                        <animate attributeName="r" values="45;55;45" dur="4s" repeatCount="indefinite"/>
+                    </circle>
+                    <text x="500" y="145" text-anchor="middle" fill="#000" font-size="20" font-weight="bold">SLM</text>
+                    <text x="500" y="165" text-anchor="middle" fill="#000" font-size="12">Gestión</text>
+                    
+                    <!-- OLA -->
+                    <rect x="250" y="220" width="120" height="60" rx="15" fill="url(#goldGradient)" filter="url(#glow)">
+                        <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" begin="1s" repeatCount="indefinite"/>
+                    </rect>
+                    <text x="310" y="245" text-anchor="middle" fill="#000" font-size="18" font-weight="bold">OLA</text>
+                    <text x="310" y="265" text-anchor="middle" fill="#000" font-size="12">Interno TI</text>
+                    
+                    <!-- UC -->
+                    <rect x="630" y="220" width="120" height="60" rx="15" fill="url(#goldGradient)" filter="url(#glow)">
+                        <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" begin="1.5s" repeatCount="indefinite"/>
+                    </rect>
+                    <text x="690" y="245" text-anchor="middle" fill="#000" font-size="18" font-weight="bold">UC</text>
+                    <text x="690" y="265" text-anchor="middle" fill="#000" font-size="12">Proveedores</text>
+                    
+                    <!-- Proveedor Externo -->
+                    <rect x="820" y="20" width="120" height="60" rx="15" fill="url(#goldGradient)" filter="url(#glow)">
+                        <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" begin="2s" repeatCount="indefinite"/>
+                    </rect>
+                    <text x="880" y="40" text-anchor="middle" fill="#000" font-size="14" font-weight="bold">PROVEEDOR</text>
+                    <text x="880" y="60" text-anchor="middle" fill="#000" font-size="14">EXTERNO</text>
+                    
+                    <!-- Conexiones animadas -->
+                    <!-- Cliente a SLA -->
+                    <line x1="170" y1="50" x2="300" y2="50" stroke="#ffd700" stroke-width="4">
+                        <animate attributeName="stroke-dasharray" values="0,20;20,0" dur="2s" repeatCount="indefinite"/>
+                    </line>
+                    <polygon points="290,45 300,50 290,55" fill="#ffd700"/>
+                    
+                    <!-- SLA a SLM -->
+                    <line x1="360" y1="80" x2="480" y2="120" stroke="#ffd700" stroke-width="4">
+                        <animate attributeName="stroke-dasharray" values="0,20;20,0" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+                    </line>
+                    <polygon points="475,115 485,120 475,125" fill="#ffd700"/>
+                    
+                    <!-- SLM a OLA -->
+                    <line x1="470" y1="180" x2="350" y2="220" stroke="#ffd700" stroke-width="4">
+                        <animate attributeName="stroke-dasharray" values="0,20;20,0" dur="2s" begin="1s" repeatCount="indefinite"/>
+                    </line>
+                    <polygon points="345,215 355,220 345,225" fill="#ffd700"/>
+                    
+                    <!-- SLM a UC -->
+                    <line x1="530" y1="180" x2="650" y2="220" stroke="#ffd700" stroke-width="4">
+                        <animate attributeName="stroke-dasharray" values="0,20;20,0" dur="2s" begin="1.5s" repeatCount="indefinite"/>
+                    </line>
+                    <polygon points="645,215 655,220 645,225" fill="#ffd700"/>
+                    
+                    <!-- UC a Proveedor -->
+                    <line x1="750" y1="250" x2="820" y2="80" stroke="#ffd700" stroke-width="4">
+                        <animate attributeName="stroke-dasharray" values="0,20;20,0" dur="2s" begin="2s" repeatCount="indefinite"/>
+                    </line>
+                    <polygon points="815,85 825,80 820,90" fill="#ffd700"/>
+                    
+                    <!-- Etiquetas de flujo -->
+                    <text x="235" y="40" text-anchor="middle" fill="#ffd700" font-size="14" font-weight="bold">
+                        <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/>
+                        Solicita
+                    </text>
+                    <text x="420" y="100" text-anchor="middle" fill="#ffd700" font-size="14" font-weight="bold">
+                        <animate attributeName="opacity" values="0;1;0" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+                        Gestiona
+                    </text>
+                    <text x="400" y="200" text-anchor="middle" fill="#ffd700" font-size="14" font-weight="bold">
+                        <animate attributeName="opacity" values="0;1;0" dur="2s" begin="1s" repeatCount="indefinite"/>
+                        Coordina
+                    </text>
+                    <text x="590" y="200" text-anchor="middle" fill="#ffd700" font-size="14" font-weight="bold">
+                        <animate attributeName="opacity" values="0;1;0" dur="2s" begin="1.5s" repeatCount="indefinite"/>
+                        Contrata
+                    </text>
+                    <text x="785" y="165" text-anchor="middle" fill="#ffd700" font-size="14" font-weight="bold">
+                        <animate attributeName="opacity" values="0;1;0" dur="2s" begin="2s" repeatCount="indefinite"/>
+                        Provee
+                    </text>
+                </svg>
+            </div>
+            
+            <div class="highlight-box">
+                🔗 SLM coordina todos los acuerdos para garantizar la entrega efectiva del servicio
+            </div>
+        </div>
+
+        <!-- Slide 4: Objetivos Principales -->
         <div class="slide">
             <h2>Objetivos Principales del SLM</h2>
             <div class="objectives-list">
@@ -918,9 +1067,6 @@
                     <div class="metric-icon">💎</div>
                     <p><strong>Calidad</strong></p>
                 </div>
-            </div>
-            <div class="metrics"> 
-                <a href="./index.html">Preguntas</a>
             </div>
         </div>
     </div>
